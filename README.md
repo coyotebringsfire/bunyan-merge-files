@@ -2,25 +2,14 @@
 
 [![Build Status](https://travis-ci.org/coyotebringsfire/bunyan-merge-files.png)](https://travis-ci.org/coyotebringsfire/bunyan-merge-files)
 
+## Description
+This module merges an array of Bunyan files and produces an array merged by date. Internally Generators are used because I wanted to learn how to use them.
+
 ## Scripts
 
 - `test` - run tests
 
-## Edit defaults
-
-- Edit package name in Travis-CI and David-DM badges in this readme
-- Edit package json:
-	- package `name`
-	- pacakge `description`
-	- path to your `main` file
-	- `version`
-	- `author`
-	- `keywords`
-	- `repository`
-	- `homepage`
-	- do not forget to add possible executables to `bin` section
-
-## Add example usage 
+## Example usage 
 
 ```javascript
 var mergeLogs = require('bunyan-merge-files');
@@ -34,7 +23,7 @@ See more additional description
 
 ## Add API Reference
 
-`boil(something)` - boils a plate
+`mergeLogs(arrayOfFilenames)` - merges specified logs files
 
 - - - 
 
