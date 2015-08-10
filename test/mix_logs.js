@@ -5,6 +5,9 @@ var should	= require('should'),
 	async 	= require('async'),
 	util 	= require('util');
 
+var NUMBER_OF_ENTRIES 	= 10,
+		NUMBER_OF_LOGFILES 	= 100;
+
 function verifyMerge(lines) {
 	var lastTime 	= lines[lines.length-1].time;
 	for (var i = lines.length - 2; i >= 0; i--) {
@@ -12,10 +15,17 @@ function verifyMerge(lines) {
 	};
 }
 
-describe("mix_logs", function suite() {
-	var NUMBER_OF_ENTRIES 	= 10,
-		NUMBER_OF_LOGFILES 	= 100,
-		logs 				= [];
+function mergeFiles(filesArray) {
+	var Mixer 	= require('../lib/mix_logs').Mixer,
+			mixer 	= new Mixer(filesArray), mixedLogs;
+	mixedLogs = mixer.mix();
+	mixedLogs.should.be.an.instanceOf(Array);
+	mixedLogs.length.should.equal(NUMBER_OF_ENTRIES*filesArray.length);
+	verifyMerge( mixedLogs );
+}
+
+describe("Mixer", function suite() {
+	var logs = [];
 
 	this.timeout(10000);
 
@@ -54,49 +64,53 @@ describe("mix_logs", function suite() {
 		}, done);
 	});
 	
-	it("should throw an error if constructed with a string", function doTest(done) {
-		var mixLogs=require('../lib/mix_logs');
-		(function() {
-			mixLogs("./data/test.log");
-		}).should.throw();
-		done();
-	});
-	
-	it("should throw an error if constructed without an argument", function doTest(done) {
-		var mixLogs=require('../lib/mix_logs');
-		(function() {
-			mixLogs();
-		}).should.throw();
-		done();
-	});
-	
-	it("should return an array of the merged files - 1 file", function doTest(done) {
-		var mixLogs=require('../lib/mix_logs'),
-			mixedLogs;
-		mixedLogs = mixLogs(logs.slice(0,1));
-		mixedLogs.should.be.an.instanceOf(Array);
-		mixedLogs.length.should.equal(NUMBER_OF_ENTRIES*1);
-		verifyMerge( mixedLogs );
-		done();
-	});
-	
-	it("should return an array of the merged files - 10 files", function doTest(done) {
-		var mixLogs=require('../lib/mix_logs'),
-			mixedLogs;
-		mixedLogs = mixLogs(logs.slice(0,10));
-		mixedLogs.should.be.an.instanceOf(Array);
-		mixedLogs.length.should.equal(NUMBER_OF_ENTRIES*10);
-		verifyMerge( mixedLogs );
-		done();
-	});
-	
-	it("should return an array of the merged files - 100 files", function doTest(done) {
-		var mixLogs=require('../lib/mix_logs'),
-			mixedLogs;
-		mixedLogs = mixLogs(logs.slice(0,100));
-		mixedLogs.should.be.an.instanceOf(Array);
-		mixedLogs.length.should.equal(NUMBER_OF_ENTRIES*100);
-		verifyMerge( mixedLogs );
-		done();
+	describe("#mix", function() {
+		it("should throw an error if constructed with a string", function doTest(done) {
+			var Mixer 	= require('../lib/mix_logs').Mixer,
+					mixer 	= new Mixer("./data/test.log");
+			(function() {
+				mixer.mix(); 
+			}).should.throw();
+			done();
+		});
+		
+		it("should throw an error if constructed without an argument", function doTest(done) {
+			var Mixer 	= require('../lib/mix_logs').Mixer,
+					mixer 	= new Mixer();
+			(function() {
+				mixer.mix();
+			}).should.throw();
+			done();
+		});
+
+		it("should return an array of the merged files - 1 file", function doTest(done) {
+			mergeFiles(logs.slice(0,1));
+			done();
+		});
+
+		it("should return an array of the merged files - 10 files", function doTest(done) {
+			mergeFiles(logs.slice(0,10));
+			done();
+		});
+
+		it("should return an array of the merged files - 100 files", function doTest(done) {
+			mergeFiles(logs.slice(0,100));
+			done();
+		});
+
+		it("should emit a line event each time a line is merged", function doTest(done) {
+			var Mixer 					= require('../lib/mix_logs').Mixer,
+					mixer 					= new Mixer(logs.slice(0,100)), mixedLogs, 
+					lineEventCount	= 0;
+			mixer.on('line', function eventHandler(evt) {
+				lineEventCount++;
+			});
+			mixedLogs = mixer.mix();
+			mixedLogs.should.be.an.instanceOf(Array);
+			mixedLogs.length.should.equal(NUMBER_OF_ENTRIES*100);
+			lineEventCount.should.equal(NUMBER_OF_ENTRIES*100);
+			verifyMerge( mixedLogs );
+			done();
+		});
 	});
 });
