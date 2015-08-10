@@ -12,9 +12,12 @@ This module merges an array of Bunyan files and produces an array merged by date
 ## Example usage 
 
 ```javascript
-var mergeLogs = require('bunyan-merge-files');
-
-var mergedLogs = mergeLogs([ "file1", "file2" ]);
+var Mixer = require('bunyan-merge-files');
+var mixer = new Mixer(["file1", "file2"]);
+mixer.on('line', function lineEventHandler(evt) {
+  console.log(evt.message);
+});
+var mergedLogs = mixer.mix();
 
 console.log(mergedLogs);
 ```
@@ -23,7 +26,12 @@ See more additional description
 
 ## Add API Reference
 
-`mergeLogs(arrayOfFilenames)` - merges specified logs files
+`Mixer(arrayOfFilenames)` - constructor for Mixer object
+`Mixer#mix()` - merges files, returns results as array
+
+## Events
+
+`line` - emitted when a line has been merged
 
 - - - 
 
