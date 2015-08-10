@@ -1,6 +1,6 @@
 {
   "name": "bunyan-merge-files",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "merge bunyan log files using Generators",
   "main": "index.js",
   "directories": {
