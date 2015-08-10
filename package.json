@@ -1,0 +1,34 @@
+{
+  "name": "bunyan-merge-files",
+  "version": "0.0.1",
+  "description": "merge bunyan log files using Generators",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "node_modules/mocha/bin/mocha --harmony-generators test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/coyotebringsfire/bunyan-merge-files.git"
+  },
+  "keywords": [
+    "bunyan",
+    "merge",
+    "generator"
+  ],
+  "author": "coyotebringsfire",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/coyotebringsfire/bunyan-merge-files/issues"
+  },
+  "homepage": "https://github.com/coyotebringsfire/bunyan-merge-files",
+  "devDependencies": {
+    "async": "^1.4.2",
+    "bunyan": "^1.4.0",
+    "mocha": "^2.2.5",
+    "rimraf": "^2.4.2",
+    "should": "^7.0.3"
+  }
+}
